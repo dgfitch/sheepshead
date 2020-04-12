@@ -11,11 +11,13 @@ test('initialState has empty hands and kitty', () => {
   expect(state.kitty.length).toEqual(0);
 });
 
+// TODO: Unclear how to test functions that use boardgame.io's ctx to shuffle cards
 test('deal cards to initial state gives each player 6 cards and 2 in kitty', () => {
-  let state = dealCards(initialState())
-  state.players.forEach(function(p) {
+  let ctx = undefined;
+  let G = dealCards(initialState(), ctx)
+  G.players.forEach(function(p) {
     expect(p.hand.length).toEqual(6);
   })
-  expect(state.kitty.length).toEqual(2);
+  expect(G.kitty.length).toEqual(2);
 });
 
