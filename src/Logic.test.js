@@ -1,4 +1,4 @@
-import {initialState, buildDeck} from './Logic';
+import { buildDeck, dealCards, initialState } from './Logic';
 
 test('make a deck', () => {
   let deck = buildDeck();
@@ -12,7 +12,7 @@ test('initialState has empty hands and kitty', () => {
 });
 
 test('deal cards to initial state gives each player 6 cards and 2 in kitty', () => {
-  let state = initialState()
+  let state = dealCards(initialState())
   state.players.forEach(function(p) {
     expect(p.hand.length).toEqual(6);
   })

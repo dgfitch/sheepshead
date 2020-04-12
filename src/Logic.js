@@ -27,13 +27,17 @@ function initialState() {
 
 function dealCards(state) {
   var cards = buildDeck()
-  var kitty = [];
-  var hands = [];
-  // TODO: dish out cards
+  function deal() {
+    return cards.splice(Math.floor(Math.random()*cards.length), 1);
+  }
+  function getHand() {
+    return [deal(), deal(), deal(), deal(), deal(), deal()]
+  }
 
   return Object.assign(state, {
-    kitty: kitty,
-    players: state.players.map(p => Object.assign(p, {hand: hands[0]})),
+    // I know this isn't legal Sheboygan-style dealing the kitty first, SHH don't tell anyone
+    kitty: [deal(), deal()],
+    players: state.players.map(p => Object.assign(p, {hand: getHand()})),
   });
 }
 
