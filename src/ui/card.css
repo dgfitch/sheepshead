@@ -1,0 +1,42 @@
+
+.card {
+  border: 1px solid #555;
+  border-radius: 8px;
+  width: 100px;
+  height: 150px;
+  line-height: 75px;
+  text-align: center;
+  display: inline-block;
+  background-color: #fff;
+  font-size: 300%;
+}
+
+.card:hover {
+  background-color: #ddf;
+}
+
+.suit {
+  position: relative;
+  z-order: 1;
+}
+
+.clubs:before {
+  content: '♣';
+  color: black;
+}
+
+.spades:before {
+  content: '♠';
+  color: black;
+}
+
+.hearts:before {
+  content: '♥';
+  color: red;
+}
+
+.diamonds:before {
+  content: '♦';
+  color: red;
+}
+

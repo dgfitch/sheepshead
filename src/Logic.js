@@ -12,16 +12,19 @@ function buildDeck() {
 
 function initialState(ctx) {
   return {
-    deck: buildDeck(),
     kitty: [],
     table: [],
     name: Array(ctx.numPlayers).fill('Unknown'),
     hand: Array(ctx.numPlayers).fill([]),
+    tricks: Array(ctx.numPlayers).fill([]),
     points: Array(ctx.numPlayers).fill(0),
     factor: 1,
     dealer: 0,
+    // because TurnOrder.CUSTOM_FROM requires a field
+    after_dealer: 0,
     picker: undefined,
     partner: undefined,
+    deck: buildDeck(),
   }
 }
 
@@ -56,7 +59,10 @@ function dealCards(G, ctx) {
 
   // I know this isn't legal Sheboygan-style dealing the kitty first, SHH don't tell anyone
   G.kitty = [deal(), deal()]
-  G.players = G.players.map(p => Object.assign(p, {hand: getHand()}))
+  G.hand = [...Array(5).keys()].map(() => getHand())
+  console.log("Current player", ctx.currentPlayer);
+  G.dealer = ctx.currentPlayer;
+  ctx.events.endPhase();
 }
 
 function pass(G, ctx) {
@@ -64,10 +70,10 @@ function pass(G, ctx) {
 }
 
 function pick(G, ctx) {
-  let hand = ctx.hands[ctx.currentPlayer]
-  hand.append(G.kitty)
-  G.kitty = []
-  ctx.events.endPhase()
+  G.hand[ctx.currentPlayer].push(G.kitty.pop())
+  G.hand[ctx.currentPlayer].push(G.kitty.pop())
+  G.picker = ctx.currentPlayer;
+  ctx.events.endPhase();
 }
 
 function buryCard(G, ctx) {

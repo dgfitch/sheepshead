@@ -18,11 +18,13 @@ export class CardTable extends React.Component {
     let hands = []
     for (let i = 0; i < 5; i++) {
       let cells = []
-      let p = this.props.G.players[i]
-      cells.push(<td key='name'>{p.name}</td>)
-      p.hand.forEach(function (card) {
+      let name = this.props.G.name[i]
+      let hand = this.props.G.hand[i]
+      cells.push(<span key='name'>{name}</span>)
+      hand.forEach(function (card) {
+        let cardKey = i.toString() + card.suit + card.name
         cells.push(
-          <Card value={card} onClick={() => this.onClick(card)}/>
+          <Card key={cardKey} value={card} onClick={() => this.onClick(card)}/>
         )
       })
       hands.push(<div key={i}>{cells}</div>)
