@@ -21,7 +21,7 @@ function initialState(ctx) {
     factor: 1,
     dealer: 0,
     // because TurnOrder.CUSTOM_FROM requires a field
-    after_dealer: 0,
+    afterDealer: 0,
     picker: undefined,
     partner: undefined,
     deck: buildDeck(),
@@ -30,7 +30,7 @@ function initialState(ctx) {
 
 /* Filters and checks */
 
-function noCardsLeft(G) {
+function noCardsLeft(G, ctx) {
   return (
     G.hand[0].length ===
     G.hand[1].length ===
@@ -41,12 +41,38 @@ function noCardsLeft(G) {
   )
 }
 
+function doneBurying(G, ctx) {
+  console.log("Checking if done burying")
+  return G.hand[ctx.currentPlayer].length === 6
+}
+
 
 /* State changes and "moves" */
 
 function putTheNutOnTheTable(G, ctx) {
   G.factor *= 2;
 }
+
+function nextPlayer(i) {
+  if (i === 5) {
+    return 0
+  } else {
+    return parseInt(i) + 1
+  }
+}
+
+function rotateFromPlayerIndex(i) {
+  // This is probably a really dumb way to do this, but we need to create a 
+  // "round" of turn order based on a given index
+  let players = []
+  players = [...Array(5).keys()]
+  let index = parseInt(i) + 1
+  for (i=0; i<index; i++) {
+    players.push(players.shift())
+  }
+  return players
+}
+
 
 function dealCards(G, ctx) {
   G.deck = ctx.random.Shuffle(G.deck)
@@ -60,13 +86,14 @@ function dealCards(G, ctx) {
   // I know this isn't legal Sheboygan-style dealing the kitty first, SHH don't tell anyone
   G.kitty = [deal(), deal()]
   G.hand = [...Array(5).keys()].map(() => getHand())
-  console.log("Current player", ctx.currentPlayer);
   G.dealer = ctx.currentPlayer;
-  ctx.events.endPhase();
+  G.afterDealer = nextPlayer(G.dealer)
+  ctx.events.endPhase()
 }
 
 function pass(G, ctx) {
   // literally nothing
+  ctx.events.endTurn();
 }
 
 function pick(G, ctx) {
@@ -77,12 +104,13 @@ function pick(G, ctx) {
 }
 
 function buryCard(G, ctx) {
-  // TODO
+  // TODO: Let them choose a card??
+  G.kitty.push(G.hand[ctx.currentPlayer].pop())
+  ctx.events.endTurn({next: G.picker});
 }
 
 function callAce(G, ctx) {
-  // TODO
-  ctx.events.endPhase()
+  ctx.events.endPhase({turn: {next: G.afterDealer}});
 }
 
 function playCard(G, ctx) {
@@ -107,6 +135,7 @@ export {
   initialState,
   buildDeck,
   noCardsLeft,
+  doneBurying,
   putTheNutOnTheTable,
   dealCards, 
   pass,

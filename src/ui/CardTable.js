@@ -64,12 +64,23 @@ export class CardTable extends React.Component {
 
     return (
       <div id="view">
+        <div id="debug">
+          <div>Player count: {this.props.ctx.numPlayers}</div>
+          <div>Phase: {this.props.ctx.phase}</div>
+          <div>Current player: {this.props.ctx.currentPlayer}</div>
+          <div>Game state turn order: {this.props.G.turnOrder}</div>
+          <div>Doubling factor: {this.props.ctx.factor}</div>
+          <div>Dealer: {this.props.G.dealer}</div>
+          <div>Picker: {this.props.G.picker}</div>
+          <div>Partner: {this.props.G.partner}</div>
+          <div>Tricks: {this.props.G.tricks}</div>
+        </div>
         {extra}
         {table}
+        {kitty}
         <div id="hands">
           {hands}
         </div>
-        {kitty}
       </div>
     )
   }

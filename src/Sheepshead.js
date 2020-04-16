@@ -2,6 +2,7 @@
 import {
   initialState,
   noCardsLeft,
+  doneBurying,
   putTheNutOnTheTable,
   dealCards,
   pass,
@@ -22,50 +23,50 @@ export const Sheepshead = {
   numPlayers: 5,
   turn: { moveLimit: 1 },
   phases: {
-    beginHand: {
+    deal: {
       start: true,
       moves: { 
         dealCards,
         putTheNutOnTheTable,
       },
-      turn: {
-        activePlayers: ActivePlayers.ALL,
-      },
       next: 'pick',
     },
     pick: {
       turn: {
-        order: TurnOrder.CUSTOM_FROM('after_dealer'),
+        order: TurnOrder.CONTINUE,
       },
       moves: {
         pass,
         pick,
       },
       next: 'bury',
+      // TODO: What if the dealer passes?
     },
     bury: {
-      turn: {
-        order: TurnOrder.CUSTOM_FROM('picker'),
-      },
-      moves: {
-        buryCard,
-      },
-      next: 'callAce',
+      turn: { order: TurnOrder.CONTINUE },
+      moves: { buryCard },
+      endIf: doneBurying,
+      next: 'call',
     },
     call: {
+      turn: {
+        order: TurnOrder.CONTINUE,
+      },
       moves: {
         callAce,
       },
-      next: 'play',
+      next: 'hand',
     },
     // TODO: Allow crack/recrack before first play
-    play: {
+    hand: {
+      // turn: { order: TurnOrder.CUSTOM("afterDealer") },
       moves: { playCard },
       endIf: noCardsLeft,
       next: 'score',
     },
     score: {
       // back to the start jimbo
+      next: 'deal',
     }
   }
 };
