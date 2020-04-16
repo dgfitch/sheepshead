@@ -14,7 +14,7 @@ function initialState(ctx) {
   return {
     kitty: [],
     table: [],
-    name: Array(ctx.numPlayers).fill('Unknown'),
+    name: [...Array(5).keys()].map(x => "Player " + (x+1)),
     hand: Array(ctx.numPlayers).fill([]),
     tricks: Array(ctx.numPlayers).fill([]),
     points: Array(ctx.numPlayers).fill(0),
