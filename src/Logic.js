@@ -42,7 +42,6 @@ function noCardsLeft(G, ctx) {
 }
 
 function doneBurying(G, ctx) {
-  console.log("Checking if done burying")
   return G.hand[ctx.currentPlayer].length === 6
 }
 
@@ -103,23 +102,31 @@ function pick(G, ctx) {
   ctx.events.endPhase();
 }
 
-function buryCard(G, ctx) {
-  // TODO: Let them choose a card??
-  G.kitty.push(G.hand[ctx.currentPlayer].pop())
+function buryCard(G, ctx, index) {
+  let slice = G.hand[ctx.currentPlayer].splice(index, 1)
+  let card = slice[0]
+  G.kitty.push(card)
   ctx.events.endTurn({next: G.picker});
 }
 
 function callAce(G, ctx) {
-  ctx.events.endPhase({turn: {next: G.afterDealer}});
+  ctx.events.endPhase();
 }
 
-function playCard(G, ctx) {
-  ctx.events.endPhase()
-  // TODO
-  // how does player select a card?
-  // G.table.append(card)
-  // remove from hand
-  // G.hand[ctx.currentPlayer].slice();
+function playCard(G, ctx, index) {
+  let slice = G.hand[ctx.currentPlayer].splice(index, 1)
+  let card = slice[0]
+  G.table.push(card)
+  // if table has 5 cards, finish hand
+  if (G.table.length >= 5) {
+    // Figure out who won the trick
+    let winner = 0
+    let trick = G.table.splice(0, G.table.length)
+    G.tricks[winner].push(trick)
+    ctx.events.endTurn({next: winner});
+  } else {
+    ctx.events.endTurn();
+  }
 }
 
 function crack(G, ctx) {

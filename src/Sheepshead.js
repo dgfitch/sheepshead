@@ -27,6 +27,8 @@ export const Sheepshead = {
       start: true,
       moves: { 
         dealCards,
+        // the traditional nut, not an obscene thing, a piece of hardware used 
+        // to signify the "doubling out" of the final hand
         putTheNutOnTheTable,
       },
       next: 'pick',
@@ -49,9 +51,7 @@ export const Sheepshead = {
       next: 'call',
     },
     call: {
-      turn: {
-        order: TurnOrder.CONTINUE,
-      },
+      turn: { order: TurnOrder.CONTINUE },
       moves: {
         callAce,
       },
@@ -59,7 +59,13 @@ export const Sheepshead = {
     },
     // TODO: Allow crack/recrack before first play
     hand: {
-      // turn: { order: TurnOrder.CUSTOM("afterDealer") },
+      turn: {
+        // TODO: We need to start with the player after the dealer,
+        // but this doesn't work for some reason
+        // order: TurnOrder.CUSTOM_FROM("afterDealer"),
+        first: (G, ctx) => G.afterDealer,
+        next: (G, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
+      },
       moves: { playCard },
       endIf: noCardsLeft,
       next: 'score',

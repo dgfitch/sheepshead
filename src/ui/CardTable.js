@@ -45,20 +45,18 @@ export class CardTable extends React.Component {
     }
 
     let tablecards = this.props.G.table
-    let table
-    if (tablecards.size > 0) {
-      var cards = []
-      tablecards.forEach(function (card) {
-        let cardKey = card.suit + card.name
-        cards.push(
-          <Card key={cardKey} value={card} onClick={() => this.onClick(card)}/>
-        )
-      })
-      table =
-        <div id="table">
-          Table: {cards}
-        </div>
-    }
+    let tablemarkup
+    var cards = []
+    tablecards.forEach(function (card) {
+      let cardKey = card.suit + card.name
+      cards.push(
+        <Card key={cardKey} value={card} onClick={() => this.onClick(card)}/>
+      )
+    })
+    tablemarkup =
+      <div id="table">
+        Table: {cards}
+      </div>
 
     let extra = <h1>Sheepshead</h1>
 
@@ -71,12 +69,13 @@ export class CardTable extends React.Component {
           <div>Game state turn order: {this.props.G.turnOrder}</div>
           <div>Doubling factor: {this.props.ctx.factor}</div>
           <div>Dealer: {this.props.G.dealer}</div>
+          <div>After dealer: {this.props.G.afterDealer}</div>
           <div>Picker: {this.props.G.picker}</div>
           <div>Partner: {this.props.G.partner}</div>
           <div>Tricks: {this.props.G.tricks}</div>
         </div>
         {extra}
-        {table}
+        {tablemarkup}
         {kitty}
         <div id="hands">
           {hands}
